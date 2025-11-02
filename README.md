@@ -67,6 +67,7 @@ Empty file acting as a heartbeat signal.
 
 Below is a compact, implementation-ready plan for organizing R scripts and core functions. It uses a small set of modules, a clear state machine, and file-locked CSV I/O.
 
+```
 dorado-orchestrator/
 ├─ R/
 │  ├─ config.R                # paths, constants, timeouts
@@ -85,3 +86,4 @@ dorado-orchestrator/
 ├─ status/                    # runtime state (CSV + heartbeats)
 ├─ samplesheet.csv
 └─ example_dataset1/...
+```
