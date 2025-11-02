@@ -84,6 +84,10 @@ dorado-orchestrator/
 │  ├─ agent_main.R            # entry point for an agent (PC)
 │  └─ reconcile.R             # optional: repairs/cleans bad states
 ├─ status/                    # runtime state (CSV + heartbeats)
-├─ samplesheet.csv
-└─ example_dataset1/...
+│  ├─ folder_status.csv              # Tracks high-level progress per folder.
+│  ├─ file_status_[folder_id].csv    # Tracks detailed progress for individual files within a folder.
+│  ├─ agent_status.csv               # Tracks agent (PC) states and manual overrides.
+│  ├─ heartbeat_[agent_name].touch   # Empty file acting as a heartbeat signal.  
+├─ samplesheet.csv                   # Defines input and output folder pairs for basecalling tasks.
+└─ example_dataset1/...              # Toy examples for testing
 ```
