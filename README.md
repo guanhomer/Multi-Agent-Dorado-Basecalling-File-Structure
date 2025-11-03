@@ -62,7 +62,6 @@ Tracks agent (PC) states and manual overrides.
 | Folder | `folder_status.csv` | `folder_` | pending, processing, done |
 | File | `file_status_[folder_id].csv` | `file_` | pending, downloading, basecalling, uploading, done |
 | Agent | `agent_status.csv` | `agent_` | off, on, locked |
-| Heartbeat | `heartbeat_[agent_name].touch` | — | — |
 
 ---
 
