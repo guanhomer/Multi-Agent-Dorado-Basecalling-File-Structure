@@ -10,7 +10,7 @@ ensure_file_status <- function(cfg, folder_row) {
   
   if (file.exists(fcsv)) return(fcsv)
   
-  folder_row$pod5_dir_complete <- .root_join(cfg$nanopore_root, folder_row$pod5_dir)
+  folder_row$pod5_dir_complete <- join_root(cfg$nanopore_root, folder_row$pod5_dir)
   
   pod5s <- list.files(folder_row$pod5_dir_complete, pattern = "\\.pod5$", full.names = TRUE)
   pod5s <- file.path(folder_row$pod5_dir, basename(pod5s))
@@ -59,8 +59,8 @@ process_folder <- function(cfg, folder_row, replacing = FALSE) {
     log_message(sprintf("Processing %d/%d ...\n", i, nrow(ff)), cfg$log_file)
     
     # Prepend root if path is relative; then normalize
-    pod5_path_complete <- .root_join(cfg$nanopore_root, ff$pod5_path[i])
-    bam_path_complete  <- .root_join(cfg$nanopore_root, ff$bam_path[i])
+    pod5_path_complete <- join_root(cfg$nanopore_root, ff$pod5_path[i])
+    bam_path_complete  <- join_root(cfg$nanopore_root, ff$bam_path[i])
     
     # ---------- SKIP existing bam ----------
     if (!replacing && file.exists(bam_path_complete)) {
@@ -162,19 +162,6 @@ process_folder <- function(cfg, folder_row, replacing = FALSE) {
       write_csv_locked(cfg$folder_status, fs)
     }
   }
-}
-
-# Helper: detect absolute paths on Windows and POSIX
-.is_abs_path <- function(p) {
-  ifelse(.Platform$OS.type == "windows",
-         grepl("^[A-Za-z]:[\\/]|^\\\\\\\\", p),
-         grepl("^/", p))
-}
-
-# Prepend root if path is relative; then normalize
-.root_join <- function(root, path) {
-  full <- ifelse(.is_abs_path(path), path, file.path(root, path))
-  normalizePath(full, winslash = "/", mustWork = FALSE)
 }
 
 # Run Dorado basecalling for a single POD5 → BAM.

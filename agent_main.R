@@ -68,7 +68,7 @@ source_here_glob <- function(pattern, recursive = FALSE, local = parent.frame())
 }
 
 # Source in a sensible order (logging first)
-source_here("R/logging.R")
+source_here("R/utils.R")
 source_here("R/config.R")
 source_here_glob("R/*.R")
 
@@ -113,7 +113,7 @@ agent_main <- function() {
     
     t0 <- Sys.time()
     process_folder(cfg, row, replacing = FALSE)
-    dt <- round(as.numeric(difftime(Sys.time(), t0, units = "hours")), 2)
+    dt <- fmt_duration(t0, "hours")
     log_message(sprintf("Processing complete for folder_id=%s in %f hours.", row$folder_id[1], dt), cfg$log_file)
   }
   

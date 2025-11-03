@@ -10,8 +10,8 @@ discover_new_folders <- function(cfg) {
   fs <- read_csv_locked(cfg$folder_status, 
                         c("name","folder_id","pod5_dir","bam_dir","folder_status","agent_name","last_updated"))
   
-  ss$pod5_dir = path_fix(ss$pod5_dir)
-  ss$bam_dir = path_fix(ss$bam_dir)
+  ss$pod5_dir = norm_slashes(ss$pod5_dir)
+  ss$bam_dir = norm_slashes(ss$bam_dir)
   
   key_ss <- paste(ss$pod5_dir, ss$bam_dir)
   key_fs <- paste(fs$pod5_dir, fs$bam_dir)
@@ -32,9 +32,4 @@ discover_new_folders <- function(cfg) {
     write_csv_locked(cfg$folder_status, fs)
   }
   invisible(nrow(new_rows))
-}
-
-
-path_fix <- function(path) {
-  gsub("\\\\", "/", path)
 }
