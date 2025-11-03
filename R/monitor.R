@@ -23,6 +23,7 @@ should_pause <- function(cfg) {
   
   if (isTRUE(should_locked)) {
     log_message(sprintf("Detected locked state for agent '%s'; pausing.", cfg$agent_name), cfg$log_file)
+    update_agent_state(cfg, agent_state = "pausing")
   }
   
   should_locked

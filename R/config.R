@@ -21,7 +21,7 @@ cfg <- local({
     dorado_exe <- "C:/proj/dorado-1.1.1-win64/bin/dorado.exe"
     reference_fa <- "C:/proj/reference/GRCh38.p14.genome.fa"
     local_tmp_dir <- "C:/proj/temp"
-  } else { # Sequencing PC
+  } else if (agent_id == "SA-0002286DRS") { # Sequencing PC
     agent_name = "Seq_PC"
     dorado_exe  <- "C:/proj/dorado-1.1.1-win64/bin/dorado.exe"
     reference_fa <- "C:/nanopore_data/Reference_genome/GRCh38.p14.genome.fa/GRCh38.p14.genome.fa"

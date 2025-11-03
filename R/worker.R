@@ -22,7 +22,7 @@ ensure_file_status <- function(cfg, folder_row) {
     bam_path  = file.path(folder_row$bam_dir, paste0(tools::file_path_sans_ext(basename(pod5s)), ".bam")),
     file_status = "pending",
     agent_name = NA_character_,
-    last_updated = format(Sys.Date(), "%Y-%m-%d %H:%m"),
+    last_updated = now_ts(),
     stringsAsFactors = FALSE
   )
   write_csv_locked(fcsv, df)
@@ -42,6 +42,8 @@ process_folder <- function(cfg, folder_row, replacing = FALSE) {
   
   repeat {
     if (should_pause(cfg)) { Sys.sleep(600); next }
+    
+    update_agent_state(cfg, agent_state = "on")
     
     # read current state
     ff <- read_csv_locked(
@@ -66,7 +68,7 @@ process_folder <- function(cfg, folder_row, replacing = FALSE) {
     if (!replacing && file.exists(bam_path_complete)) {
       ff <- read_csv_locked(fcsv, names(ff))
       ff$file_status[i]  <- "done"
-      ff$last_updated[i] <- format(Sys.Date(), "%Y-%m-%d %H:%m")
+      ff$last_updated[i] <- now_ts()
       write_csv_locked(fcsv, ff)
       
       log_message(sprintf("%s\n", "Found existing bam output. Skipping ..."), cfg$log_file)
@@ -76,7 +78,7 @@ process_folder <- function(cfg, folder_row, replacing = FALSE) {
     # ---------- DOWNLOADING ----------
     ff$file_status[i]  <- "downloading"
     ff$agent_name[i]   <- cfg$agent_name
-    ff$last_updated[i] <- format(Sys.Date(), "%Y-%m-%d %H:%m")
+    ff$last_updated[i] <- now_ts()
     write_csv_locked(fcsv, ff)
     
     # copy POD5 locally (single-file scratch)
@@ -90,7 +92,7 @@ process_folder <- function(cfg, folder_row, replacing = FALSE) {
     # ---------- BASECALLING ----------
     ff <- read_csv_locked(fcsv, names(ff))
     ff$file_status[i]  <- "basecalling"
-    ff$last_updated[i] <- format(Sys.Date(), "%Y-%m-%d %H:%m")
+    ff$last_updated[i] <- now_ts()
     write_csv_locked(fcsv, ff)
     
     # ensure previous temp BAM is removed
@@ -111,7 +113,7 @@ process_folder <- function(cfg, folder_row, replacing = FALSE) {
     if (!file.exists(cfg$local_tmp_bam)) {
       ff <- read_csv_locked(fcsv, names(ff))
       ff$file_status[i]  <- "pending"
-      ff$last_updated[i] <- format(Sys.Date(), "%Y-%m-%d %H:%m")
+      ff$last_updated[i] <- now_ts()
       write_csv_locked(fcsv, ff)
       
       # cleanup partial artifacts
@@ -126,7 +128,7 @@ process_folder <- function(cfg, folder_row, replacing = FALSE) {
     # ---------- UPLOADING ----------
     ff <- read_csv_locked(fcsv, names(ff))
     ff$file_status[i]  <- "uploading"
-    ff$last_updated[i] <- format(Sys.Date(), "%Y-%m-%d %H:%m")
+    ff$last_updated[i] <- now_ts()
     write_csv_locked(fcsv, ff)
     
     # copy local BAM to final destination
@@ -138,7 +140,7 @@ process_folder <- function(cfg, folder_row, replacing = FALSE) {
     # ---------- DONE ----------
     ff <- read_csv_locked(fcsv, names(ff))
     ff$file_status[i]  <- "done"
-    ff$last_updated[i] <- format(Sys.Date(), "%Y-%m-%d %H:%m")
+    ff$last_updated[i] <- now_ts()
     write_csv_locked(fcsv, ff)
     
     # cleanup local temps for next iteration
@@ -158,7 +160,7 @@ process_folder <- function(cfg, folder_row, replacing = FALSE) {
     j <- which(fs$folder_id == folder_row$folder_id)[1]
     if (!is.na(j)) {
       fs$folder_status[j] <- "done"
-      fs$last_updated[j]  <- format(Sys.Date(), "%Y-%m-%d %H:%m")
+      fs$last_updated[j]  <- now_ts()
       write_csv_locked(cfg$folder_status, fs)
     }
   }

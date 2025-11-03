@@ -25,7 +25,7 @@ discover_new_folders <- function(cfg) {
       bam_dir  = new_rows$bam_dir,
       folder_status = "pending",
       agent_name = NA_character_,
-      last_updated = format(Sys.Date(), "%Y-%m-%d %H:%m"),
+      last_updated = now_ts(),
       stringsAsFactors = FALSE
     )
     fs <- rbind(fs, add)

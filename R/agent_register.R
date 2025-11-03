@@ -1,6 +1,6 @@
 # Ensure this agent exists in status/agent_status.csv; add if missing.
 
-update_agent_state <- function(cfg, agent_state = "off", lock_state = "unlocked", folder_id = NULL) {
+update_agent_state <- function(cfg, agent_state = NULL, lock_state = "unlocked", folder_id = NULL) {
   stopifnot(!is.null(cfg$agent_name), nzchar(cfg$agent_name))
   dir.create(dirname(cfg$agent_status), recursive = TRUE, showWarnings = FALSE)
   
@@ -12,9 +12,9 @@ update_agent_state <- function(cfg, agent_state = "off", lock_state = "unlocked"
       agent_id  = cfg$agent_id,
       agent_name  = cfg$agent_name,
       lock_state  = lock_state,
-      agent_state = agent_state,
+      agent_state = "off",
       last_folder_id = "",
-      last_updated = format(Sys.Date(), "%Y-%m-%d %H:%m"),
+      last_updated = now_ts(),
       stringsAsFactors = FALSE
     )
     as <- rbind(as, new_row)
@@ -23,9 +23,9 @@ update_agent_state <- function(cfg, agent_state = "off", lock_state = "unlocked"
   } else {
     # Ensure required columns exist and touch timestamp (no state change)
     i <- which(as$agent_id == cfg$agent_id)[1]
-    as$agent_state[i]  <- agent_state
+    if (!is.null(agent_state)) as$agent_state[i]  <- agent_state
     if (!is.null(folder_id)) as$last_folder_id = folder_id
-    as$last_updated[i] <- format(Sys.Date(), "%Y-%m-%d %H:%m")
+    as$last_updated[i] <- now_ts()
     write_csv_locked(cfg$agent_status, as)
     return(invisible(FALSE)) # already present
   }

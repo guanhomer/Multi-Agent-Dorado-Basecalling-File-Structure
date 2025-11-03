@@ -81,9 +81,12 @@ agent_main <- function() {
   log_message("Agent state set to ON.", cfg$log_file)
   
   repeat {
+    
+    
     # Pause / lock handling
     if (should_pause(cfg)) {
       log_message("Agent paused (locked). Sleeping...", cfg$log_file)
+      update_agent_state(cfg, agent_state = "Sleeping")
       Sys.sleep(600)
       next
     }

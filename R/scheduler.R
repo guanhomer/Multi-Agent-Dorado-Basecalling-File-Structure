@@ -13,6 +13,8 @@ claim_next_folder <- function(cfg) {
   # 1) Resume existing work for this agent (if any)
   j <- which(fs$agent_name == cfg$agent_name & fs$folder_status == "processing")[1]
   if (!is.na(j)) {
+    fs$last_updated[j] <- now_ts()
+    write_csv_locked(cfg$folder_status, fs)
     return(fs[j, , drop = FALSE])
   }
   
@@ -22,7 +24,7 @@ claim_next_folder <- function(cfg) {
 
   fs$folder_status[idx] <- "processing"
   fs$agent_name[idx]    <- cfg$agent_name
-  fs$last_updated[idx]  <- format(Sys.Date(), "%Y-%m-%d %H:%m")
+  fs$last_updated[idx]  <- now_ts()
   write_csv_locked(cfg$folder_status, fs)
   fs[idx, , drop = FALSE]
 }
