@@ -120,5 +120,4 @@ dorado-orchestrator/
 
 - Multiple agents cooperate through shared CSV files in a network folder.  
 - Each file operation uses **`filelock`** for concurrency safety.  
-- Folder and file statuses are updated atomically; each agent resumes where it left off.  
 - The system is modular and easily extensible (e.g., custom Dorado CLI arguments, retry logic, health monitoring).
