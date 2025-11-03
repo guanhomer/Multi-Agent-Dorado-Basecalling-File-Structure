@@ -80,10 +80,9 @@ dorado-orchestrator/
 │  ├─ discovery.R             # Detect new folders; update folder_status.csv
 │  ├─ scheduler.R             # Pick next folder; create/read file_status; loop
 │  ├─ worker.R                # File-level transitions; hooks to Dorado
-│  ├─ monitor.R               # Manual overrides, heartbeats, restart logic
-│  ├─ logging.R               # Simple logs
-│  └─ utils.R                 # Helper functions (timestamps, paths, etc.)
-├─ status/                    # Runtime state (CSV + heartbeats)
+│  ├─ monitor.R               # Manual overrides, restart logic
+│  └─ utils.R                 # Helper functions (logging, timestamps, paths, etc.)
+├─ status/                    # Runtime state (CSV)
 │  ├─ folder_status.csv              # High-level folder progress
 │  ├─ file_status_[folder_id].csv    # File-level progress tracking
 │  └─ agent_status.csv               # Agent states and manual control
