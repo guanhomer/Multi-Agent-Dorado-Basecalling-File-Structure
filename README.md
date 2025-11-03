@@ -88,7 +88,7 @@ Tracks each agent’s operational state and manual control flags. Agents can be 
 |---------|--------------|---------|------------------------|
 | Folder | `folder_status.csv` | `folder_` | pending, processing, done |
 | File | `file_status_[folder_id].csv` | `file_` | pending, downloading, basecalling, uploading, done |
-| Agent | `agent_status.csv` | `agent_` | off, on, locked |
+| Agent | `agent_status.csv` | `agent_` | off, on, locked, sleeping, pausing |
 
 ---
 
