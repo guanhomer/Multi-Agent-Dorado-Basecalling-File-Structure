@@ -69,7 +69,7 @@ Tracks file-level progress within a folder.
 ---
 
 ### 4. `status/agent_status.csv`
-Tracks each agent’s operational state and manual control flags.
+Tracks each agent’s operational state and manual control flags. Agents can be manually paused or resumed by editing status/agent_status.csv.
 
 | Column | Description |
 |---------|-------------|
