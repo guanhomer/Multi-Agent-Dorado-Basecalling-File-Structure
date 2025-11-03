@@ -95,7 +95,7 @@ Tracks each agent’s operational state and manual control flags. Agents can be 
 ## Repository Layout
 
 ```
-dorado-orchestrator/
+Multi-Agent-Dorado-Basecalling-File-Structure/
 ├─ R/
 │  ├─ config.R          # Global config, paths, timeouts, Dorado exe path
 │  ├─ agent_register.R  # Ensure agent entry exists in agent_status.csv
