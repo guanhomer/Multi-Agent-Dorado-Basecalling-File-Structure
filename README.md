@@ -2,7 +2,9 @@
 
 This system enables multiple PCs (“agents”) to perform **Dorado basecalling concurrently** on shared POD5 data while maintaining consistent synchronization and preventing file conflicts.
 
-It uses the [`filelock`](https://cran.r-project.org/package=filelock) R package to coordinate concurrent reads and writes across network drives.
+It uses the `filelock` R package to coordinate concurrent reads and writes across network drives.
+
+It includes `toggle_agent.bat` script to toggle agent locked/unlocked.
 
 ---
 
@@ -113,6 +115,21 @@ Multi-Agent-Dorado-Basecalling-File-Structure/
 ├─ samplesheet.csv       # Folder mappings for POD5 → BAM
 └─ agent_main.R          # Agent entry point script
 ```
+
+---
+
+## Manual lock/unlock via toggle_agent.bat
+Use toggle_agent.bat to pause or resume an agent by editing status/agent_status.csv. The script shows the table before/after the change, acquires a simple lock (agent_status.csv.lockdir) to avoid concurrent edits, and can be double-clicked (window stays open).
+
+Usage (cmd or double-click prompts):
+- Default status_dir: alongside the script in status\
+- Requires PowerShell (built into Windows 10/11)
+
+What it changes:
+- Sets lock_state to locked/unlocked
+- Touches last_updated
+
+Agents check lock_state in their loop and pause when locked, resuming automatically when switched back to unlocked.
 
 ---
 
