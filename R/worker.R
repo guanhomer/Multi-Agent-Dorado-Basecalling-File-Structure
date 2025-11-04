@@ -44,6 +44,7 @@ process_folder <- function(cfg, folder_row, replacing = FALSE) {
     if (should_pause(cfg)) { Sys.sleep(600); next }
     
     update_agent_state(cfg, agent_state = "on")
+    update_folder_status(cfg, folder_id = folder_row$folder_id)
     
     # read current state
     ff <- read_csv_locked(
@@ -133,8 +134,7 @@ process_folder <- function(cfg, folder_row, replacing = FALSE) {
     
     # copy local BAM to final destination
     log_message(sprintf("%s\n", "Uploading BAM ..."), cfg$log_file)
-    dir.create(dirname(bam_path_complete[i]), recursive = TRUE, showWarnings = FALSE)
-    ok <- file.copy(cfg$local_tmp_bam, bam_path_complete, overwrite = TRUE)
+    ok <- atomic_upload_bam(cfg$local_tmp_bam, bam_path_complete[i], log_file = cfg$log_file)
     if (!ok) stop("Failed to copy BAM to final destination: ", bam_path_complete)
     
     # ---------- DONE ----------

@@ -28,3 +28,24 @@ claim_next_folder <- function(cfg) {
   write_csv_locked(cfg$folder_status, fs)
   fs[idx, , drop = FALSE]
 }
+
+update_folder_status <- function(cfg, folder_id, status = NULL, agent_name = NULL) {
+  # Expected schema (deduped)
+  cols <- c("name","folder_id","pod5_dir","bam_dir","folder_status","agent_name","last_updated")
+
+  fs <- read_csv_locked(cfg$folder_status, cols)
+
+  idx <- which(fs$folder_id == folder_id)
+  
+  # Update the first match; warn if duplicates
+  if (length(idx) > 1) warning("Multiple rows share the same folder_id; updating the first (index ", idx[1], ").")
+  j <- idx[1]
+
+  if (!is.null(status)) fs$folder_status[j] <- status
+  if (!is.null(agent_name)) fs$agent_name[j] <- agent_name
+  fs$last_updated[j]  <- now_ts()
+
+  write_csv_locked(cfg$folder_status, fs)
+
+  return(invisible(TRUE))
+}
