@@ -16,6 +16,16 @@ The orchestrator scripts then generate and update status files that coordinate s
 
 Each POD5–BAM pair (folder) is assigned to only one agent at a time to prevent conflicts and redundant work.
 
+The typical workflow for each folder is:
+
+- Downloading the POD5 file to the local agent’s temporary directory
+- Basecalling the POD5 using Dorado
+- Uploading the resulting BAM file back to the shared BAM folder
+
+These stages correspond to the file status transitions:
+
+`pending → downloading → basecalling → uploading → done`.
+
 ```
 Multi-Agent-Dorado-Basecalling-File-Structure/
 ├─ R/
