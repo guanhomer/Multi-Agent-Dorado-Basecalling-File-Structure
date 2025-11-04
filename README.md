@@ -4,7 +4,7 @@ This system enables multiple PCs (“agents”) to perform **Dorado basecalling 
 
 It uses the `filelock` R package to coordinate concurrent reads and writes across network drives.
 
-A companion script, toggle_agent.bat, lets users manually switch an agent between locked and unlocked states for controlled pausing or resuming of processing.
+A companion script, `toggle_agent.bat`, lets users manually switch an agent between locked and unlocked states for controlled pausing or resuming of processing.
 
 ---
 
@@ -149,8 +149,3 @@ Agents check lock_state in their loop and pause when locked, resuming automatica
 
 ---
 
-## Summary
-
-- Multiple agents cooperate through shared CSV files in a network folder.  
-- Each file operation uses **`filelock`** for concurrency safety.  
-- The system is modular and easily extensible (e.g., custom Dorado CLI arguments, retry logic, health monitoring).
