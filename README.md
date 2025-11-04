@@ -4,10 +4,40 @@ This system enables multiple PCs (“agents”) to perform **Dorado basecalling 
 
 It uses the `filelock` R package to coordinate concurrent reads and writes across network drives.
 
-It includes `toggle_agent.bat` script to toggle agent locked/unlocked.
+A companion script, toggle_agent.bat, lets users manually switch an agent between locked and unlocked states for controlled pausing or resuming of processing.
 
 ---
 
+## Repository Layout
+
+Each user defines input/output folder pairs (`pod5_dir`, `bam_dir`) manually in the samplesheet.
+
+The orchestrator scripts then generate and update status files that coordinate scheduling and progress tracking.
+
+Each POD5–BAM pair (folder) is assigned to only one agent at a time to prevent conflicts and redundant work.
+
+```
+Multi-Agent-Dorado-Basecalling-File-Structure/
+├─ R/
+│  ├─ config.R          # Global config, paths, timeouts, Dorado exe path
+│  ├─ agent_register.R  # Ensure agent entry exists in agent_status.csv
+│  ├─ locks.R           # Lock helpers (filelock + lockdir fallback)
+│  ├─ io_csv.R          # Locked CSV I/O utilities
+│  ├─ discovery.R       # Detect new folders from samplesheet
+│  ├─ scheduler.R       # Select next folder to process
+│  ├─ worker.R          # Run basecalling steps & update status
+│  ├─ monitor.R         # Handle manual overrides, pause/resume
+│  └─ utils.R           # Generic helpers (paths, timestamps, logging, atomic ops)
+├─ status/
+│  ├─ folder_status.csv           # Folder-level task tracking
+│  ├─ file_status_[folder_id].csv # File-level tracking within each folder
+│  └─ agent_status.csv            # Agent states and manual control
+├─ samplesheet.csv                # Folder mappings for POD5 → BAM
+├─ toggle_agent.bat               # Manual lock/unlock toggle for agents
+└─ agent_main.R                   # Agent entry point script
+```
+
+---
 ## Core Principle: Safe Concurrent Access
 
 When several agents read and write shared CSV status files (`folder_status.csv`, `file_status_*.csv`, `agent_status.csv`), race conditions can occur.  
@@ -91,30 +121,6 @@ Tracks each agent’s operational state and manual control flags. Agents can be 
 | Folder | `folder_status.csv` | `folder_` | pending, processing, done |
 | File | `file_status_[folder_id].csv` | `file_` | pending, downloading, basecalling, uploading, done |
 | Agent | `agent_status.csv` | `agent_` | off, on, locked, sleeping, pausing |
-
----
-
-## Repository Layout
-
-```
-Multi-Agent-Dorado-Basecalling-File-Structure/
-├─ R/
-│  ├─ config.R          # Global config, paths, timeouts, Dorado exe path
-│  ├─ agent_register.R  # Ensure agent entry exists in agent_status.csv
-│  ├─ locks.R           # Lock helpers (filelock + lockdir fallback)
-│  ├─ io_csv.R          # Locked CSV I/O utilities
-│  ├─ discovery.R       # Detect new folders from samplesheet
-│  ├─ scheduler.R       # Select next folder to process
-│  ├─ worker.R          # Run basecalling steps & update status
-│  ├─ monitor.R         # Handle manual overrides, pause/resume
-│  └─ utils.R           # Generic helpers (paths, timestamps, logging)
-├─ status/
-│  ├─ folder_status.csv
-│  ├─ file_status_[folder_id].csv
-│  └─ agent_status.csv
-├─ samplesheet.csv       # Folder mappings for POD5 → BAM
-└─ agent_main.R          # Agent entry point script
-```
 
 ---
 
